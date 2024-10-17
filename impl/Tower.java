@@ -14,7 +14,7 @@ public class Tower {
         if (!runway.isSuitableForLanding(plane)) {
             throw new RunwayTooShort();
         }
-        if (!runway.runwayIsOpen()) {
+        if (!runway.isOpen()) {
             throw new RunwayClosed();
         }
     }

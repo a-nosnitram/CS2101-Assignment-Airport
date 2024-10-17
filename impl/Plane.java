@@ -12,8 +12,9 @@ public class Plane extends AirportEntity {
     private int landingLengthRequired;
     private boolean currentlyTaxiing;
     private List<Passenger> passengers;
+    private String airlineId;
 
-    public Plane(String id, int seats, int crew, int engines, int landingLengthRequired) {
+    public Plane(String id, int seats, int crew, int engines, int landingLengthRequired, String airlineId) {
         super(id);
         this.seatCapacity = seats;
         this.seatsTaken = 0;
@@ -21,33 +22,38 @@ public class Plane extends AirportEntity {
         this.engines = engines;
         this.landingLengthRequired = landingLengthRequired;
         this.currentlyTaxiing = false;
+        this.airlineId = airlineId;
         passengers = new ArrayList<>();
     }
 
     // accessor methods
 
     public int getSeatCapacity() {
-        return this.seatCapacity;
+        return seatCapacity;
+    }
+
+    public String getAirlineId() {
+        return airlineId;
     }
 
     public int getSeatsTaken() {
-        return this.seatsTaken;
+        return seatsTaken;
     }
 
     public int getCrew() {
-        return this.crew;
+        return crew;
     }
 
     public int getLandingLengthRequired() {
-        return this.landingLengthRequired;
+        return landingLengthRequired;
     }
 
     public int getNumberOfEngines() {
-        return this.engines;
+        return engines;
     }
 
     public boolean isCurrentlyTaxiing() {
-        return this.currentlyTaxiing;
+        return currentlyTaxiing;
     }
 
     // passenger management
@@ -74,7 +80,7 @@ public class Plane extends AirportEntity {
                 this.getId(), airport.getId(), runway.getId()));
 
         airport.addTaxiing(this);
-        runway.free();
+        runway.occupyOrFree();
     }
 
     public void landAt(Airport airport, Runway runway) {
@@ -83,7 +89,7 @@ public class Plane extends AirportEntity {
 
         airport.addCurrentlyInAirport(this);
         this.removeAllPassengers();
-        runway.occupy();
+        runway.occupyOrFree();
     }
 
 }

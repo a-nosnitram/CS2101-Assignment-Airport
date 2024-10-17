@@ -16,6 +16,7 @@ public class Airport extends AirportEntity {
     private List<Plane> inAirport;
     private List<Plane> taxiing;
     private List<Airline> airlines;
+    private List<Passenger> passengers;
     private Registration registry;
     private Tower atc;
 
@@ -28,6 +29,7 @@ public class Airport extends AirportEntity {
         taxiing = new ArrayList<>();
         registry = new Registration();
         airlines = new ArrayList<>();
+        passengers = new ArrayList<>();
         atc = new Tower();
     }
 
@@ -41,6 +43,10 @@ public class Airport extends AirportEntity {
 
     public void addPlane(Plane plane) {
         planes.add(plane);
+    }
+
+    public void addPassenger(Passenger passenger) {
+        passengers.add(passenger);
     }
 
     public void addCurrentlyInAirport(Plane plane) {
@@ -94,13 +100,14 @@ public class Airport extends AirportEntity {
         return this.taxiing.size();
     }
 
-
-
     public int getAllPlanes() {
         return this.taxiing.size() + this.inAirport.size();
     }
 
     // accessor methods for the List attributes
+    public Registration getRegistry() {
+        return registry;
+    }
 
     // Get the list of runways
     public List<Runway> getRunways() {
@@ -125,6 +132,14 @@ public class Airport extends AirportEntity {
     // Get the list of planes currently taxiing
     public List<Plane> getTaxiing() {
         return taxiing;
+    }
+
+    public List<Passenger> getPassengers() {
+        return passengers;
+    }
+
+    public List<Airline> getAirlines() {
+        return airlines;
     }
 
 

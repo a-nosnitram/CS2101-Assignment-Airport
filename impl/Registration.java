@@ -23,4 +23,8 @@ public class Registration {
         }
         throw new InvalidTicketId();
     }
+
+    public Ticket getTicket(int index) {
+        return registration.get(index);
+    }
 }

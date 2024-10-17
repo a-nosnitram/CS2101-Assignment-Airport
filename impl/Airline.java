@@ -19,6 +19,11 @@ public class Airline extends AirportEntity {
         return this.name;
     }
 
+    public List<Plane> getPlanes() {
+        return planes;
+    }
+
+
     // other methods
 
     public void addPlane(Plane plane) {

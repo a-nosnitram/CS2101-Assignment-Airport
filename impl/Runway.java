@@ -1,4 +1,5 @@
 package impl;
+
 public class Runway extends AirportEntity {
     private int length;
     private boolean isOpen;
@@ -23,33 +24,33 @@ public class Runway extends AirportEntity {
 
     // mutator methods
 
-    public void open() {
-        this.isOpen = true;
+    public void openOrClose() {
+        if (this.isOpen()) {
+            isOpen = false;
+        } else {
+            isOpen = true;
+        }
     }
 
-    public void close() {
-        this.isOpen = false;
-    }
-
-    public void occupy() {
-        this.isOccupied = true;
-    }
-
-    public void free() {
-        this.isOccupied = false;
+    public void occupyOrFree() {
+        if (this.isOccupied()) {
+            isOccupied = false;
+        } else {
+            isOccupied = true;
+        }
     }
 
     // accessor methods
 
     public int getLength() {
-        return this.length;
+        return length;
     }
 
-    public boolean runwayIsOccupied() {
-        return this.isOccupied;
+    public boolean isOccupied() {
+        return isOccupied;
     }
 
-    public boolean runwayIsOpen() {
-        return this.isOpen;
+    public boolean isOpen() {
+        return isOpen;
     }
 }

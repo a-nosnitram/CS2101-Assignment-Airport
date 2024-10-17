@@ -1,9 +1,11 @@
 package impl;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Terminal extends AirportEntity {
     private List<Gate> gates;
+
 
     public Terminal(String id) {
         super(id);
@@ -15,5 +17,9 @@ public class Terminal extends AirportEntity {
     }
 
     // accessor methods
+
+    public List<Gate> getGates() {
+        return gates;
+    }
 
 }

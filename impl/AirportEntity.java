@@ -1,4 +1,7 @@
 package impl;
+
+import java.util.List;
+
 /**
  * The abstract AirportEntity class serves as a backbone for
  * other entity clases that share common properties and
@@ -15,5 +18,15 @@ public abstract class AirportEntity {
 
     public String getId() {
         return id;
+    }
+
+    // using generics
+    public static <T extends AirportEntity> T getById(List<T> entities, String id) {
+        for (T entity : entities) {
+            if (entity.getId().equals(id)) {
+                return entity;
+            }
+        }
+        return null;
     }
 }

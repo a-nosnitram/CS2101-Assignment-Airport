@@ -13,11 +13,11 @@ public class Ticket extends AirportEntity {
     // accessor methods
 
     public String getSeatNumbeer() {
-        return this.seatNumber;
+        return seatNumber;
     }
 
     public Plane getPlane() {
-        return this.plane;
+        return plane;
     }
 
 }
