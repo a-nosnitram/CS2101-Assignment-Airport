@@ -1,5 +1,7 @@
 package impl;
 
+import exceptions.IdAlreadyInUse;
+
 // import java.util.ArrayList;
 // import java.util.List;
 
@@ -8,7 +10,7 @@ public class Gate extends AirportEntity {
     // private List<Passenger> passengers;
     boolean isOpen;
 
-    public Gate(String id) {
+    public Gate(String id) throws IdAlreadyInUse {
         super(id);
         this.isOpen = true;
         // passengers = new ArrayList<>();

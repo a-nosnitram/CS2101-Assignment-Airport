@@ -1,11 +1,14 @@
 package impl;
+
+import exceptions.IdAlreadyInUse;
+
 public class Passenger extends AirportEntity {
     private String name;
     private String sex;
     private int age;
     private String ticketId;
 
-    public Passenger(String id, String name, String sex, int age, String ticketId) {
+    public Passenger(String id, String name, String sex, int age, String ticketId) throws IdAlreadyInUse {
         super(id);
         this.name = name;
         this.sex = sex;

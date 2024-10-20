@@ -15,7 +15,7 @@ public class Plane extends AirportEntity {
     private String airlineId;
     private String gateId;
 
-    public Plane(String id, int seats, int crew, int engines, int landingLengthRequired, String airlineId) {
+    public Plane(String id, int seats, int crew, int engines, int landingLengthRequired, String airlineId) throws IdAlreadyInUse {
         super(id);
         this.seatCapacity = seats;
         this.seatsTaken = 0;
@@ -89,16 +89,16 @@ public class Plane extends AirportEntity {
     // other methods
 
     public void takeOffFrom(Airport airport, Runway runway) {
-        System.out.println(String.format("Plane with id %s has taken off from airport %s from runway with id %s",
-                this.getId(), airport.getId(), runway.getId()));
+        System.out.println(String.format("Plane with id %s has taken off from airport from runway with id %s",
+                this.getId(), runway.getId()));
 
         airport.addTaxiing(this);
         runway.occupyOrFree();
     }
 
     public void landAt(Airport airport, Runway runway) {
-        System.out.println(String.format("Plane with id %s has landed in airport %s on runway with id %s",
-                this.getId(), airport.getId(), runway.getId()));
+        System.out.println(String.format("Plane with id %s has landed in airport on runway with id %s",
+                this.getId(), runway.getId()));
 
         airport.addCurrentlyInAirport(this);
         this.removeAllPassengers();

@@ -1,11 +1,13 @@
 package impl;
 
+import exceptions.IdAlreadyInUse;
+
 public class Ticket extends AirportEntity {
     private String seatNumber;
     private Plane plane;
     // private String gate; // instead of a string
 
-    public Ticket(String id, String seatNumber, Plane plane) {
+    public Ticket(String id, String seatNumber, Plane plane) throws IdAlreadyInUse {
         super(id);
         this.seatNumber = seatNumber;
         this.plane = plane;

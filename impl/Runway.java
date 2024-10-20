@@ -1,11 +1,13 @@
 package impl;
 
+import exceptions.IdAlreadyInUse;
+
 public class Runway extends AirportEntity {
     private int length;
     private boolean isOpen;
     private boolean isOccupied;
 
-    public Runway(String id, int length) {
+    public Runway(String id, int length) throws IdAlreadyInUse {
         super(id);
         this.length = length;
         this.isOpen = true;

@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import exceptions.IdAlreadyInUse;
+
 /**
  * The abstract AirportEntity class serves as a backbone for
  * other entity clases that share common properties and
@@ -17,16 +19,22 @@ public abstract class AirportEntity {
     private static final Set<String> usedIds = new HashSet<>();
 
     // constructor
-    public AirportEntity(String id) {
-        if (usedIds.contains(id)) {
-            System.out.println();
+    public AirportEntity(String id) throws IdAlreadyInUse {
+        if (isIdInUse(id)) {
+            throw new IdAlreadyInUse(id);
+        } else {
+            this.id = id;
+            usedIds.add(id);
         }
-        this.id = id;
-        usedIds.add(id);
     }
 
     public String getId() {
         return id;
+    }
+
+    // check if an ID is already in use
+    public static boolean isIdInUse(String id) {
+        return usedIds.contains(id);
     }
 
     // using generics

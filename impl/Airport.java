@@ -10,10 +10,9 @@ import static design.Colours.*;
  * The airport denotes the building
  * that contains gates, runways, aircraft, etc.
  */
-public class Airport extends AirportEntity {
+public class Airport {
     private List<Runway> runways;
     private List<Terminal> terminals;
-    private List<Plane> planes;
     private List<Plane> inAirport;
     private List<Plane> taxiing;
     private List<Airline> airlines;
@@ -21,11 +20,9 @@ public class Airport extends AirportEntity {
     private Registration registry;
     private Tower atc;
 
-    public Airport(String id) {
-        super(id);
+    public Airport() {
         runways = new ArrayList<>();
         terminals = new ArrayList<>();
-        planes = new ArrayList<>();
         inAirport = new ArrayList<>();
         taxiing = new ArrayList<>();
         registry = new Registration();
@@ -94,7 +91,7 @@ public class Airport extends AirportEntity {
 
         try {
             plane.addPassenger(passenger, plane);
-        } catch (AllSeatsAreTaken |InvalidTicketId |PlaneCurrentlyTaxiing | InvalidPlaneId | ThatSeatIsTaken e) {
+        } catch (AllSeatsAreTaken | InvalidTicketId | PlaneCurrentlyTaxiing | InvalidPlaneId | ThatSeatIsTaken e) {
             return RED + BOLD + e.getMessage() + RESET;
         }
         return (GREEN + BOLD + "Passenger " + passenger.getName()
@@ -111,7 +108,7 @@ public class Airport extends AirportEntity {
         return this.taxiing.size();
     }
 
-    public int getAllPlanes() {
+    public int getAllPlanesNum() {
         return this.taxiing.size() + this.inAirport.size();
     }
 
@@ -130,11 +127,6 @@ public class Airport extends AirportEntity {
         return terminals;
     }
 
-    // Get the list of all planes
-    public List<Plane> getPlanes() {
-        return planes;
-    }
-
     // Get the list of planes currently in the airport
     public List<Plane> getInAirport() {
         return inAirport;
@@ -143,6 +135,13 @@ public class Airport extends AirportEntity {
     // Get the list of planes currently taxiing
     public List<Plane> getTaxiing() {
         return taxiing;
+    }
+
+    public List<Plane> getAllPlanes() {
+        List<Plane> allPlanes = new ArrayList<>();
+        allPlanes.addAll(taxiing);
+        allPlanes.addAll(inAirport);
+        return allPlanes;
     }
 
     public List<Passenger> getPassengers() {
