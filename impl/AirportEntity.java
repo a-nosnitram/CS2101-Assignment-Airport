@@ -1,6 +1,8 @@
 package impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The abstract AirportEntity class serves as a backbone for
@@ -11,9 +13,16 @@ import java.util.List;
 public abstract class AirportEntity {
     private String id;
 
+    // Static set to track all used IDs across all entities
+    private static final Set<String> usedIds = new HashSet<>();
+
     // constructor
     public AirportEntity(String id) {
+        if (usedIds.contains(id)) {
+            System.out.println();
+        }
         this.id = id;
+        usedIds.add(id);
     }
 
     public String getId() {

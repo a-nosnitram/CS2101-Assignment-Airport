@@ -13,6 +13,7 @@ public class Plane extends AirportEntity {
     private boolean currentlyTaxiing;
     private List<Passenger> passengers;
     private String airlineId;
+    private String gateId;
 
     public Plane(String id, int seats, int crew, int engines, int landingLengthRequired, String airlineId) {
         super(id);
@@ -23,6 +24,7 @@ public class Plane extends AirportEntity {
         this.landingLengthRequired = landingLengthRequired;
         this.currentlyTaxiing = false;
         this.airlineId = airlineId;
+        this.gateId = "no gate assigned";
         passengers = new ArrayList<>();
     }
 
@@ -56,9 +58,20 @@ public class Plane extends AirportEntity {
         return currentlyTaxiing;
     }
 
+    public String getGateId() {
+        return gateId;
+    }
+
     // passenger management
 
-    public void addPassenger(Passenger passenger) throws AllSeatsAreTaken, InvalidTicketId {
+    public void addPassenger(Passenger passenger, Plane plane) throws AllSeatsAreTaken, InvalidTicketId, PlaneCurrentlyTaxiing, InvalidPlaneId, ThatSeatIsTaken {
+
+        if (plane.isCurrentlyTaxiing()) {
+            throw new PlaneCurrentlyTaxiing();
+        }
+        if (plane.getSeatCapacity() == plane.getSeatsTaken()) {
+            throw new AllSeatsAreTaken();
+        }
         this.seatsTaken += 1;
         passengers.add(passenger);
     }

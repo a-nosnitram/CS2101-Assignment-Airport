@@ -27,4 +27,8 @@ public class Registration {
     public Ticket getTicket(int index) {
         return registration.get(index);
     }
+
+    public List<Ticket> getTickets() {
+        return registration;
+    }
 }

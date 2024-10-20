@@ -1,6 +1,7 @@
 package impl;
 
 import exceptions.RunwayClosed;
+import exceptions.RunwayOccupied;
 import exceptions.RunwayTooShort;
 
 /**
@@ -10,17 +11,24 @@ import exceptions.RunwayTooShort;
  */
 public class Tower {
     public void manageLanding(Plane plane, Runway runway) throws RunwayTooShort, RunwayClosed {
-        // coordinate with the runway for landing clearance
         if (!runway.isSuitableForLanding(plane)) {
             throw new RunwayTooShort();
         }
         if (!runway.isOpen()) {
             throw new RunwayClosed();
+
         }
     }
 
-    public void manageTakeOff(Plane plane, Runway runway) {
-        // coordinate takeoff
+    public void manageTakeOff(Plane plane, Runway runway) throws RunwayClosed, RunwayOccupied {
+        if (!runway.isOpen()) {
+            throw new RunwayClosed();
+
+        }
+
+        if (!runway.isOccupied()) {
+            throw new RunwayOccupied();
+        }
     }
 
 }

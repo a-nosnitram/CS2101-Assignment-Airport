@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import exceptions.*;
+import static design.Colours.*;
 
 /**
  * The airport denotes the building
@@ -42,7 +43,7 @@ public class Airport extends AirportEntity {
     }
 
     public void addPlane(Plane plane) {
-        planes.add(plane);
+        inAirport.add(plane);
     }
 
     public void addPassenger(Passenger passenger) {
@@ -59,13 +60,24 @@ public class Airport extends AirportEntity {
         inAirport.remove(plane);
     }
 
-    public void landPlane(Plane plane, Runway runway) throws RunwayTooShort, RunwayClosed {
-        atc.manageLanding(plane, runway);
-        plane.landAt(this, runway);
+    public String landPlane(Plane plane, Runway runway) {
+        try {
+            atc.manageLanding(plane, runway);
+            plane.landAt(this, runway);
+            return (GREEN + BOLD + "Plane landed!" + RESET);
+        } catch (RunwayTooShort | RunwayClosed e) {
+            return (RED + BOLD + e.getMessage() + RESET);
+        }
     }
 
-    public void departPlane(Plane plane, Runway runway) {
-        plane.takeOffFrom(this, runway);
+    public String departPlane(Plane plane, Runway runway) {
+        try {
+            atc.manageTakeOff(plane, runway);
+            plane.takeOffFrom(this, runway);
+            return (GREEN + BOLD + "Plane departed!" + RESET);
+        } catch (RunwayClosed | RunwayOccupied e) {
+            return (RED + BOLD + e.getMessage() + RESET);
+        }
     }
 
     public void createTicket(Ticket ticket) {
@@ -76,18 +88,17 @@ public class Airport extends AirportEntity {
         airlines.add(airline);
     }
 
-    public void goThroughRegistration(Passenger passenger)
-            throws AllSeatsAreTaken, InvalidTicketId, PlaneCurrentlyTaxiing, InvalidPlaneId, ThatSeatIsTaken {
-        Ticket ticket = registry.getTicketById(passenger.getTcketId());
+    public String boardPlane(Passenger passenger) {
+        Ticket ticket = Ticket.getById(registry.getTickets(), passenger.getTcketId());
         Plane plane = ticket.getPlane();
 
-        if (plane.isCurrentlyTaxiing()) {
-            throw new PlaneCurrentlyTaxiing();
+        try {
+            plane.addPassenger(passenger, plane);
+        } catch (AllSeatsAreTaken |InvalidTicketId |PlaneCurrentlyTaxiing | InvalidPlaneId | ThatSeatIsTaken e) {
+            return RED + BOLD + e.getMessage() + RESET;
         }
-        if (plane.getSeatCapacity() == plane.getSeatsTaken()) {
-            throw new AllSeatsAreTaken();
-        }
-        plane.addPassenger(passenger);
+        return (GREEN + BOLD + "Passenger " + passenger.getName()
+                + " has boarded their plane" + RESET);
     }
 
     // accessor methods
@@ -141,6 +152,5 @@ public class Airport extends AirportEntity {
     public List<Airline> getAirlines() {
         return airlines;
     }
-
 
 }

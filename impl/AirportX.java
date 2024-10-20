@@ -3,23 +3,14 @@ package impl;
 // import java.sql.ResultSetMetaData;
 import java.util.Scanner;
 
+import static design.Colours.*;
+
 /**
  * The main class, where all entities are created
  */
 public class AirportX {
-
-    // Reset code
-    static final String RESET = "\033[0m";
-
-    // Text color codes
-    static final String RED = "\033[31m";
-    static final String GREEN = "\033[32m";
-    static final String YELLOW = "\033[33m";
-    static final String BLUE = "\033[34m";
-    static final String BOLD = "\033[1m";
-    static final String ITALICS = "\033[3m";
-    static final String GRAY = "\033[90m";
-    static final String PURPLE = "\u001B[35m";
+    static int runwayCnt = 0, planeCnt = 0, airlineCnt = 0, gateCnt = 0, passengerCnt = 0, terminalCnt = 0,
+            ticketCnt = 0;
 
     public static void main(String[] args) {
 
@@ -29,18 +20,6 @@ public class AirportX {
         int runwayCnt = 0, planeCnt = 0, airlineCnt = 0, gateCnt = 0, passengerCnt = 0, terminalCnt = 0, ticketCnt = 0;
 
         System.out.print(BOLD + BLUE + "\n          Welcome to the Airport Management System \n" + RESET);
-
-        // Create airport
-        // System.out.print(
-        // BOLD + BLUE + "\n Welcome to the Airport Management System" + RESET
-        // + " \n \n Create an Airport ? (Y) ");
-        // while (!(sc.nextLine()).equalsIgnoreCase("y")) {
-        // System.out.print(RED + BOLD + " Please type 'Y' to create a new airport: " +
-        // RESET);
-        // }
-
-        // System.out.print("\n Enter Airport id: ");
-        // Airport airport = new Airport(sc.nextLine());
 
         Airport airport = new Airport("airport1");
 
@@ -65,7 +44,7 @@ public class AirportX {
             } else {
                 System.out.printf(ALIGN, "3.  Create Airline", "8.  Manage Airlines & Planes");
             }
-            if (planeCnt < 1 || airlineCnt < 1) {
+            if (airport.getPlanes().size() < 1 || airlineCnt < 1) {
                 System.out.printf(ALIGN, RED + "4.  Create Ticket",
                         ITALICS + "     (requires Airline & Plane)" + RESET);
             } else {
@@ -127,25 +106,25 @@ public class AirportX {
                     break;
 
                 case "4":
-                    if (planeCnt > 0 && airlineCnt > 0) {
+                    if (airport.getPlanes().size() > 0 && airlineCnt > 0) {
                         System.out.print("\nEnter Ticket id: ");
                         String ticketId = sc.nextLine();
 
                         System.out.print("Enter Ticket seat number: ");
                         String seatNumber = sc.nextLine();
 
-                        System.out.println("Select a plane:");
-                        for (int i = 0; i < airport.getPlanes().size(); i++) {
-                            System.out.println("\n" + GRAY + (i + 1) + ". Plane with id "
-                                    + airport.getPlanes().get(i).getId() + RESET);
-                        }
-                        int planeChoice = sc.nextInt();
+                        System.out.println("Enter Plane id: ");
+                        String planeChoice = sc.nextLine();
                         sc.nextLine();
 
-                        Plane selectedPlane = airport.getPlanes().get(planeChoice - 1);
-                        airport.createTicket(new Ticket(ticketId, seatNumber, selectedPlane));
-                        ticketCnt++;
-                        System.out.println(GREEN + BOLD + "Ticket created!" + RESET);
+                        Plane selectedPlane = Plane.getById(airport.getPlanes(), planeChoice);
+                        if (selectedPlane != null) {
+                            airport.createTicket(new Ticket(ticketId, seatNumber, selectedPlane));
+                            ticketCnt++;
+                            System.out.println(GREEN + BOLD + "Ticket created!" + RESET);
+                        } else {
+                            System.out.println(RED + BOLD + "Wrong plane id. try againg." + RESET);
+                        }
                     } else {
                         System.out
                                 .println(RED + BOLD + "You need to create both a Plane and an Airline first." + RESET);
@@ -172,41 +151,63 @@ public class AirportX {
                         System.out.print("Enter Passenger age: ");
                         int age = sc.nextInt();
 
-                        System.out.println("Which ticket do you want to assign that passenger to?");
-                        for (int i = 0; i < airport.getPassengers().size(); i++) {
-                            System.out
-                                    .println("\n" + GRAY + (i + 1) + " : Ticket with id "
-                                            + airport.getRegistry().getTicket(i) + RESET);
+                        System.out.println("Enter ticket id: ");
+
+                        String ticketId = sc.nextLine();
+                        if (Ticket.getById(airport.getRegistry().getTickets(), ticketId) != null) {
+                            airport.addPassenger(new Passenger(passengerId, passengerName, sex, age, ticketId));
+                            passengerCnt++;
+                            System.out.println(GREEN + BOLD + "Passenger created!" + RESET);
+                        } else {
+                            System.out.println(RED + BOLD + "wrong ticket id. try again." + RESET);
                         }
-                        int ticketChoice = sc.nextInt();
-                        sc.nextLine();
 
-                        String ticketId = airport.getRegistry().getTicket(ticketChoice).getId();
-
-                        airport.addPassenger(new Passenger(passengerId, passengerName, sex, age, ticketId));
-                        passengerCnt++;
-                        System.out.println(GREEN + BOLD + "Passenger created!" + RESET);
                     } else {
                         System.out.println(RED + BOLD + "you need to create a Ticket first." + RESET);
                     }
                     break;
                 case "6":
-                    manageRunways(airport, sc, runwayCnt);
+                    if (runwayCnt > 0) {
+                        manageRunways(airport, sc, runwayCnt);
+                    } else {
+                        System.out.println(RED + BOLD + "Unavalable : please create a Runway first" + RESET);
+                    }
                     break;
                 case "7":
-                    manageTerminals(airport, sc, terminalCnt);
+                    if (terminalCnt > 0) {
+                        manageTerminals(airport, sc, terminalCnt);
+                    } else {
+                        System.out.println(RED + BOLD + "Unavalable : please create a Terminal first" + RESET);
+                    }
                     break;
                 case "8":
-                    manageAirlines(airport, sc, airlineCnt);
+                    if (airlineCnt > 0) {
+                        manageAirlines(airport, sc, airlineCnt);
+                    } else {
+                        System.out.println(RED + BOLD + "Unavalable : please create a Runway first" + RESET);
+                    }
                     break;
                 case "9":
-                    manageTickets(airport, sc, ticketCnt);
+                    if (ticketCnt > 0) {
+                        manageTickets(airport, sc, ticketCnt);
+                    } else {
+                        System.out.println(RED + BOLD + "Unavalable : please create a Ticket first" + RESET);
+                    }
                     break;
                 case "10":
-                    managePassengers(airport, sc, passengerCnt);
+                    if (passengerCnt > 0) {
+                        managePassengers(airport, sc, passengerCnt);
+                    } else {
+                        System.out.println(RED + BOLD + "Unavalable : please create a Passenger first" + RESET);
+                    }
                     break;
                 case "11":
-                    manageAirport(airport, sc);
+                    if (planeCnt > 0 && gateCnt > 0 && passengerCnt > 0) {
+                        manageAirport(airport, sc);
+                    } else {
+                        System.out.println(RED + BOLD
+                                + "Unavalable : please create instances of  all other entities first" + RESET);
+                    }
                     break;
                 case "12":
                     System.out.println(BLUE + BOLD + "exiting system. byyyye !" + RESET);
@@ -218,6 +219,7 @@ public class AirportX {
             }
         }
         sc.close();
+
     }
 
     // SUB-MENUS
@@ -227,7 +229,7 @@ public class AirportX {
 
             final String ALIGN = "%-10s %-5s %n";
 
-            System.out.println("\n----------------------- Manage Airlines -----------------------");
+            System.out.println(PURPLE + "\n----------------------- Manage Airlines -----------------------" + RESET);
             System.out.println(GRAY + "There are " + airlineCnt + " airlines." + RESET);
             System.out.println("\n1. View all airlines");
             System.out.println("2. View all planes of an Airline");
@@ -257,7 +259,7 @@ public class AirportX {
                                 System.out.printf(ALIGN, plane.getId(), !plane.isCurrentlyTaxiing());
                             }
                         } else {
-                            System.out.println("This airline has no planes yet.");
+                            System.out.println(RED + BOLD + "This airline has no planes yet." + RESET);
                         }
                     } else {
                         System.out.println(RED + BOLD + "airline not found. try another id" + RESET);
@@ -265,7 +267,7 @@ public class AirportX {
                     break;
 
                 case "3":
-                    System.out.print("Enter the an airline ID to view planes: ");
+                    System.out.print("Enter the an airline ID to add a plane: ");
                     String airlineIdAP = sc.nextLine();
                     Airline airlineToAddPlane = Airline.getById(airport.getAirlines(), airlineIdAP);
                     if (airlineToAddPlane != null) {
@@ -285,9 +287,11 @@ public class AirportX {
                         int landingLength = sc.nextInt();
                         sc.nextLine(); // Consume newline
 
-                        airlineToAddPlane
-                                .addPlane(new Plane(planeId, maxSeats, crew, engines, landingLength, airlineIdAP));
+                        Plane planeToAdd = new Plane(planeId, maxSeats, crew, engines, landingLength, airlineIdAP);
+                        airlineToAddPlane.addPlane(planeToAdd);
+                        airport.addPlane(planeToAdd);
                         System.out.println(GREEN + BOLD + "Plane added!" + RESET);
+                        planeCnt++;
                     } else {
                         System.out.println(RED + BOLD + "airline not found. try another id" + RESET);
                     }
@@ -295,7 +299,14 @@ public class AirportX {
                     break;
 
                 case "4":
-                    managePlanes(airport, sc);
+                    System.out.print("Enter the an airline ID to manage its planes: ");
+                    String airlineIdMT = sc.nextLine();
+                    Airline airlineTM = Airline.getById(airport.getAirlines(), airlineIdMT);
+                    if (airlineTM != null) {
+                        managePlanes(airport, airlineTM, sc);
+                    } else {
+                        System.out.println(RED + BOLD + "airline not found. try another id" + RESET);
+                    }
                     break;
 
                 case "5":
@@ -303,7 +314,7 @@ public class AirportX {
                     break;
 
                 default:
-                    System.out.println("Invalid option. Please choose again.");
+                    System.out.println(RED + BOLD + "Invalid option. Please choose again." + RESET);
             }
         }
     }
@@ -317,7 +328,7 @@ public class AirportX {
             System.out.println(PURPLE + "\n----------------------- Manage Passengers -----------------------" + RESET);
             System.out.println(GRAY + "There are " + passengerCnt + " tickets." + RESET);
             System.out.println("\n1. View all passengers");
-            // System.out.println("2. Open/Close a Runway");
+            System.out.println("2. Board Plane");
             System.out.println("3. Go Back to Main Menu");
 
             String choice = sc.nextLine();
@@ -325,31 +336,30 @@ public class AirportX {
             switch (choice) {
                 case "1":
                     System.out.println("\nListing all passengers:");
-                    System.out.printf(ALIGN, YELLOW + "\nPassenger ID ", "Name", "Sex", "Age", "Ticket Id" +
-                            RESET); // header row
+                    System.out.printf(ALIGN, YELLOW + "\nPassenger ID ", "Name", "Sex", "Age", "Ticket Id" + RESET); // headers
                     for (Passenger passenger : airport.getPassengers()) {
                         System.out.printf(ALIGN, passenger.getId(), passenger.getName(),
                                 passenger.getSex(), passenger.getAge(), passenger.getTcketId());
                     }
                     break;
 
-                // case "2":
-                // System.out.print("Enter the Runway ID to Open/Close: ");
-                // String ticketId = sc.nextLine();
-                // Ticket ticketToView = Ticket.getById(airport.getRegistry(), ticketId);
-                // if (ticketToView != null) {
+                case "2":
+                    System.out.print("Enter Passenger id to board a plane:\n");
+                    String passengerIdR = sc.nextLine();
+                    Passenger passengerR = Passenger.getById(airport.getPassengers(), passengerIdR);
+                    if (passengerR != null) {
+                        System.out.println(airport.boardPlane(passengerR));
+                    } else {
+                        System.out.println(RED + BOLD + "passenger not found. try another id" + RESET);
+                    }
+                    break;
 
-                // } else {
-                // System.out.println(RED + BOLD + "ticket not found. try another id" + RESET);
-                // }
-                // break;
-
-                // case "3":
-                // backToMain = true;
-                // break;
+                case "3":
+                    backToMain = true;
+                    break;
 
                 default:
-                    System.out.println("Invalid option. Please choose again.");
+                    System.out.println(RED + BOLD + "Invalid option. Please choose again." + RESET);
             }
 
         }
@@ -362,10 +372,11 @@ public class AirportX {
             final String ALIGN = "%-10s %-5s %-5s %n";
 
             System.out.println(PURPLE + "\n----------------------- Manage Gates -----------------------" + RESET);
-            System.out.println(GRAY + "There are " + gateCnt + " gates." + RESET);
+            System.out.println(GRAY + "There are " + gateCnt + " gates in this terminal" + RESET);
             System.out.println("\n1. View all gates");
-            System.out.println("2. Assign a Plane to a Gate");
-            System.out.println("3. Go Back to Manage Terminals");
+            System.out.println("2. Assign a Plane to a gate");
+            System.out.println("3. Open/Close a gate");
+            System.out.println("4. Go Back to Manage Terminals");
 
             String choice = sc.nextLine();
 
@@ -380,8 +391,8 @@ public class AirportX {
 
                 case "2":
                     System.out.print("Enter the gate ID to assign a plane: ");
-                    String gateId = sc.nextLine();
-                    Gate gaetToEdit = Gate.getById(terminal.getGates(), gateId); // FIGURE OUT
+                    String gateIdAP = sc.nextLine();
+                    Gate gaetToEdit = Gate.getById(terminal.getGates(), gateIdAP); // FIGURE OUT
                     if (gaetToEdit != null) {
                         // gaetToEdit;
                     } else {
@@ -390,11 +401,29 @@ public class AirportX {
                     break;
 
                 case "3":
+                    System.out.print("\nEnter the Gate ID to Open/Close: ");
+                    String gateIdE = sc.nextLine();
+                    Gate gateToEdit = Gate.getById(terminal.getGates(), gateIdE); // FIGURE OUT
+                    if (gateToEdit != null) {
+                        gateToEdit.openOrClose();
+                        if (gateToEdit.isOpen()) {
+                            System.out.println(GREEN + BOLD + "gate is now open" + RESET);
+                        } else {
+                            System.out.println(GREEN + BOLD + "gate is now closed" + RESET);
+                        }
+
+                    } else {
+                        System.out.println(RED + BOLD + "gate not found. try another id" + RESET);
+                    }
+
+                    break;
+
+                case "4":
                     backToTerminals = true;
                     break;
 
                 default:
-                    System.out.println("Invalid option. Please choose again.");
+                    System.out.println(RED + BOLD + "Invalid option. Please choose again." + RESET);
             }
         }
     }
@@ -408,8 +437,7 @@ public class AirportX {
             System.out.println(PURPLE + "\n----------------------- Manage Tickets -----------------------" + RESET);
             System.out.println(GRAY + "There are " + ticketCnt + " tickets." + RESET);
             System.out.println("\n1. View all tickets");
-            System.out.println("2. Open/Close a  Runway");
-            System.out.println("3. Go Back to Main Menu");
+            System.out.println("2. Go Back to Main Menu");
 
             String choice = sc.nextLine();
 
@@ -424,9 +452,9 @@ public class AirportX {
                     }
                     break;
 
-                // case "2":
-
-                // break;
+                case "2":
+                    backToMain = true;
+                    break;
 
                 default:
                     System.out.println("Invalid option. Please choose again.");
@@ -438,24 +466,68 @@ public class AirportX {
         Boolean backToMain = false;
         while (!backToMain) {
 
-            final String ALIGN = "%-10s %-5s %-5s %n";
-
             System.out.println(PURPLE + "\n----------------------- Manage Airport -----------------------" + RESET);
-            // System.out.println(GRAY + " " + RESET);
-            System.out.println("\n1. Go Through Registration ");
-            System.out.println("2. Open/Close a  Runway");
+            System.out.println(GRAY + ITALICS + "There are " + airport.getTaxiingNum() + " Planes taxiing and " + airport.getInAirportNum() + " Planes in airport." + RESET);
+            System.out.println("\n1. Depart a flight");
+            System.out.println("2. Land a flight");
             System.out.println("3. Go Back to Main Menu");
 
             String choice = sc.nextLine();
 
             switch (choice) {
-                // case "1":
+                case "1":
+                    System.out.println(GRAY + ITALICS
+                            + "Before taking off, ensure that the plane is assigned to a gate, \n and that all the passengers that are supposed to take this plane have boarded."
+                            + RESET);
 
-                // break;
+                    System.out.println("\nEnter Plane id: ");
+                    String depPlaneId = sc.nextLine();
+                    Plane depPlane = Plane.getById(airport.getPlanes(), depPlaneId);
 
-                // case "2":
+                    if (depPlane != null) {
+                        System.out.println("Enter take off Runway id: ");
+                        String depRunwayId = sc.nextLine();
+                        Runway depRunway = Runway.getById(airport.getRunways(), depRunwayId);
 
-                // break;
+                        if (depRunway != null) {
+                            System.out.println(airport.departPlane(depPlane, depRunway));
+                            break;
+
+                        } else {
+                            System.out.println(RED + BOLD + "There is no Runway with that id." + RESET);
+                            break;
+                        }
+                    } else {
+                        System.out.println(RED + BOLD + "There is no Plane with that id." + RESET);
+                        break;
+                    }
+
+                case "2":
+                    System.out.println(GRAY + ITALICS
+                            + "Before landing, ensure that the runway is open and long enough."
+                            + RESET);
+
+                    System.out.println("\nEnter plane id: ");
+                    String landPlaneId = sc.nextLine();
+                    Plane landPlane = Plane.getById(airport.getPlanes(), landPlaneId);
+
+                    if (landPlane != null) {
+                        System.out.println("Enter landing Runway id: ");
+                        String landRunwayId = sc.nextLine();
+                        Runway landRunway = Runway.getById(airport.getRunways(), landRunwayId);
+
+                        if (landRunway != null) {
+                            System.out.println(airport.landPlane(landPlane, landRunway));
+                            break;
+
+                        } else {
+                            System.out.println(RED + BOLD + "There is no Runway with that id." + RESET);
+                            break;
+                        }
+                    } else {
+                        System.out.println(RED + BOLD + "There is no Plane with that id." + RESET);
+                        break;
+                    }
 
                 case "3":
                     backToMain = true;
@@ -467,11 +539,11 @@ public class AirportX {
         }
     }
 
-    private static void managePlanes(Airport airport, Scanner sc) {
+    private static void managePlanes(Airport airport, Airline airline, Scanner sc) {
         Boolean backToMain = false;
         while (!backToMain) {
 
-            final String ALIGN = "%-10s %-10s %-15s %-15s %-7s %-25s %-10 %n";
+            final String ALIGN = "%-15s %-15s %-15s %-18s %-10s %-10s %-25s %-15s%n";
 
             System.out.println(PURPLE + "\n----------------------- Manage Planes -----------------------" + RESET);
             System.out.println(GRAY + "There are " + airport.getAllPlanes() + " planes." + RESET);
@@ -483,7 +555,7 @@ public class AirportX {
             switch (choice) {
                 case "1":
                     System.out.println("\nListing all planes:");
-                    System.out.printf(ALIGN, YELLOW + "\nPlane ID ", "Airline", "Seat Capacity", "Seats Available",
+                    System.out.printf(ALIGN, YELLOW + "\nPlane id", "Airline id", "Seat Capacity", "Seats Available",
                             "Crew", "Engines", "Landing Length Required", "In Airport" + RESET); // header row
                     for (Plane plane : airport.getPlanes()) {
                         System.out.printf(ALIGN, plane.getId(), plane.getAirlineId(), plane.getSeatCapacity(),
@@ -507,7 +579,7 @@ public class AirportX {
         Boolean backToMain = false;
         while (!backToMain) {
 
-            final String ALIGN = "%-20s %-5s %n";
+            final String ALIGN = "%-20s %-20s %n";
 
             System.out.println(PURPLE + "\n----------------------- Manage Terminals -----------------------" + RESET);
             System.out.println(GRAY + "There are " + terminalCnt + " terminals." + RESET);
@@ -532,15 +604,15 @@ public class AirportX {
                     System.out.print("Enter Gate id: ");
                     String gateId = sc.nextLine();
 
-                    System.out.println("Which terminal do you want to assign that gate to?");
+                    System.out.println("Which terminal do you want to assign that gate to?\n");
                     for (int i = 0; i < airport.getTerminals().size(); i++) {
-                        System.out.println("\n" + GRAY + (i + 1) + " : Terminal with id "
-                                + airport.getTerminals().get(i).getId() + RESET);
+                        System.out.printf(ALIGN, GRAY + "Terminal id :" + airport.getTerminals().get(i).getId(),
+                                "Gates :" + airport.getTerminals().get(i).getGates().size() + RESET);
                     }
-                    int terminalChoice = sc.nextInt();
+                    String terminalChoice = sc.nextLine();
                     sc.nextLine();
 
-                    airport.getTerminals().get(terminalChoice - 1).addGate(new Gate(gateId));
+                    Terminal.getById(airport.getTerminals(), terminalChoice).addGate(new Gate(gateId));
                     System.out.println(GREEN + BOLD + "Gate created!" + RESET);
 
                     break;
@@ -548,13 +620,12 @@ public class AirportX {
                 case "3":
                     System.out.print("Enter the terminal ID to view gates: ");
                     String terminalId = sc.nextLine();
-                    Terminal terminalToView = Terminal.getById(airport.getTerminals(), terminalId); // FIGURE OUT
+                    Terminal terminalToView = Terminal.getById(airport.getTerminals(), terminalId);
                     if (terminalToView != null) {
                         System.out.printf(ALIGN, YELLOW + "\nGate ID ", "Is Occupied" + RESET); // header row
                         for (Gate gate : terminalToView.getGates()) {
                             System.out.printf(ALIGN, gate.getId(), gate.isOccupied());
                         }
-
                     } else {
                         System.out.println(RED + BOLD + "terminal not found. try another id" + RESET);
                     }

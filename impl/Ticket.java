@@ -2,12 +2,14 @@ package impl;
 
 public class Ticket extends AirportEntity {
     private String seatNumber;
-    private Plane plane; // instead of a string
+    private Plane plane;
+    // private String gate; // instead of a string
 
     public Ticket(String id, String seatNumber, Plane plane) {
         super(id);
         this.seatNumber = seatNumber;
         this.plane = plane;
+        // this.gate = "To be determined";
     }
 
     // accessor methods
@@ -19,5 +21,9 @@ public class Ticket extends AirportEntity {
     public Plane getPlane() {
         return plane;
     }
+
+    // public String getgate() {
+    //     return gate;
+    // }
 
 }
