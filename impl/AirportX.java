@@ -198,7 +198,7 @@ public class AirportX {
                     break;
                 case "7":
                     if (terminalCnt > 0) {
-                        manageTerminals(airport, sc, terminalCnt);
+                        manageTerminals(airport, sc, terminalCnt, gateCnt);
                     } else {
                         System.out.println(RED + BOLD + "Unavalable : please create a Terminal first" + RESET);
                     }
@@ -376,7 +376,7 @@ public class AirportX {
         Boolean backToTerminals = false;
         while (!backToTerminals) {
 
-            final String ALIGN = "%-10s %-10s %-10s %n";
+            final String ALIGN = "%-16s %-20s %n";
 
             System.out.println(PURPLE + "\n----------------------- Manage Gates -----------------------" + RESET);
             System.out.println(GRAY + "There are " + gateCnt + " gates in this terminal" + RESET);
@@ -584,7 +584,7 @@ public class AirportX {
         }
     }
 
-    private static void manageTerminals(Airport airport, Scanner sc, int terminalCnt) {
+    private static void manageTerminals(Airport airport, Scanner sc, int terminalCnt, int gateCnt) {
         Boolean backToMain = false;
         while (!backToMain) {
 
@@ -613,16 +613,12 @@ public class AirportX {
                     System.out.print("Enter Gate id: ");
                     String gateId = sc.nextLine();
 
-                    System.out.println("Which terminal do you want to assign that gate to?\n");
-                    for (int i = 0; i < airport.getTerminals().size(); i++) {
-                        System.out.printf(ALIGN, GRAY + "Terminal id :" + airport.getTerminals().get(i).getId(),
-                                "Gates :" + airport.getTerminals().get(i).getGates().size() + RESET);
-                    }
+                    System.out.println("Enter terminal id: \n");
                     String terminalChoice = sc.nextLine();
-                    sc.nextLine();
                     try {
                         Terminal.getById(airport.getTerminals(), terminalChoice).addGate(new Gate(gateId));
                         System.out.println(GREEN + BOLD + "Gate created!" + RESET);
+                        gateCnt++;
                     } catch (IdAlreadyInUse e) {
                         System.out.print(BOLD + RED + e.getMessage() + RESET);
                     }
