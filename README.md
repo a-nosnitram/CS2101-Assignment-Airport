@@ -12,8 +12,8 @@ This application simulates the operations of an airport, managing entities like 
 ## Prerequisites
 
 Please ensure you have the following installed :
-	•	Java Development Kit (JDK) 8 or higher.
-	•	VS Code (or another editor) with the Java Extension Pack installed.
+- Java Development Kit (JDK) 8 or higher.
+- VS Code (or another editor) with the Java Extension Pack installed.
 
 ## Run the Application
 
