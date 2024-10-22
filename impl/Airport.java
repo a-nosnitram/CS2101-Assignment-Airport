@@ -3,8 +3,8 @@ package impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import exceptions.*;
-import static design.Colours.*;
+import src.exceptions.*;
+import static src.design.Colours.*;
 
 /**
  * The airport denotes the building
@@ -91,7 +91,7 @@ public class Airport {
 
         try {
             plane.addPassenger(passenger, plane);
-        } catch (AllSeatsAreTaken | InvalidTicketId | PlaneCurrentlyTaxiing | InvalidPlaneId | ThatSeatIsTaken e) {
+        } catch (AllSeatsAreTaken | PlaneCurrentlyTaxiing e) {
             return RED + BOLD + e.getMessage() + RESET;
         }
         return (GREEN + BOLD + "Passenger " + passenger.getName()

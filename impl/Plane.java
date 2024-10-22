@@ -64,7 +64,7 @@ public class Plane extends AirportEntity {
 
     // passenger management
 
-    public void addPassenger(Passenger passenger, Plane plane) throws AllSeatsAreTaken, InvalidTicketId, PlaneCurrentlyTaxiing, InvalidPlaneId, ThatSeatIsTaken {
+    public void addPassenger(Passenger passenger, Plane plane) throws AllSeatsAreTaken, PlaneCurrentlyTaxiing {
 
         if (plane.isCurrentlyTaxiing()) {
             throw new PlaneCurrentlyTaxiing();
