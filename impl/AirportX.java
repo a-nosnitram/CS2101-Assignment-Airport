@@ -173,7 +173,7 @@ public class AirportX {
                         System.out.println("Enter ticket id: ");
                         String ticketId = sc.nextLine();
 
-                        if (Ticket.getById(airport.getRegistry().getTickets(), ticketId) != null) {
+                        if (Ticket.getById(airport.getTickets(), ticketId) != null) {
                             try {
                                 airport.addPassenger(new Passenger(passengerId, passengerName, sex, age, ticketId));
                                 System.out.println(GREEN + BOLD + "Passenger created!" + RESET);

@@ -17,7 +17,7 @@ public class Airport {
     private List<Plane> taxiing;
     private List<Airline> airlines;
     private List<Passenger> passengers;
-    private Registration registry;
+    public List<Ticket> tickets;
     private Tower atc;
 
     public Airport() {
@@ -25,7 +25,7 @@ public class Airport {
         terminals = new ArrayList<>();
         inAirport = new ArrayList<>();
         taxiing = new ArrayList<>();
-        registry = new Registration();
+        tickets = new ArrayList<>();
         airlines = new ArrayList<>();
         passengers = new ArrayList<>();
         atc = new Tower();
@@ -78,7 +78,7 @@ public class Airport {
     }
 
     public void createTicket(Ticket ticket) {
-        registry.addToRegistration(ticket);
+        tickets.add(ticket);
     }
 
     public void addAirline(Airline airline) {
@@ -86,7 +86,7 @@ public class Airport {
     }
 
     public String boardPlane(Passenger passenger) {
-        Ticket ticket = Ticket.getById(registry.getTickets(), passenger.getTcketId());
+        Ticket ticket = Ticket.getById(tickets, passenger.getTcketId());
         Plane plane = ticket.getPlane();
 
         try {
@@ -113,8 +113,8 @@ public class Airport {
     }
 
     // accessor methods for the List attributes
-    public Registration getRegistry() {
-        return registry;
+    public List<Ticket> getTickets() {
+        return tickets;
     }
 
     // Get the list of runways
